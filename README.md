@@ -13,3 +13,4 @@ Expectancy mapped	to x and y axis position. The population of each country mappe
 5) Ability to view data for	a particular year.
 6) Ability to animate the change in country	statistics from year to year (1900-2016).
 
+The data required to recreate the visualisation is given in the 
