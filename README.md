@@ -13,4 +13,21 @@ Expectancy mapped	to x and y axis position. The population of each country mappe
 5) Ability to view data for	a particular year.
 6) Ability to animate the change in country	statistics from year to year (1900-2016).
 
-The data required to recreate the visualisation is given in the 
+The data required to recreate the visualisation is given in the Gapminder_All_Time.csv this file contains
+fields as below:
+
+1) Country: Country name. 
+2) Year: Year for that data observation.
+3) Population: The population of the country in this year. 
+3) LifeExp: Average	life expectancy in years.
+4) GDP: Average	GDP in inflation adjusted dollars.
+5) Code: The	country	code.
+6) Region: The region	in which the country belongs (similar	to continent).
+7) Area: The area	of the country in square kilometres.
+8) Coastline:	the	number of kilometres of	coastline	belonging	to the country.
+9) Government: Type of Govt. in Country.
+
+Extension of Project:
+
+In the Recreation of GapMinder Visualisation I have created the two Visualisation of Bar charts to show the number
+of countries per region and number of countries with govt. type.
