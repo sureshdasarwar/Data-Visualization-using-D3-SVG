@@ -6,8 +6,10 @@ elements in the visualisation.
 
 The Visualization contains the following:
 1) A bubble	plot representing the countries	of the world.
-    1.1) Countries of the world described by GDP and Life Expectancy mapped	to x and y axis position.
-    1.2) The population of each country mapped to bubble area.
+
+1.1) Countries of the world described by GDP and Life Expectancy mapped	to x and y axis position.
+1.2) The population of each country mapped to bubble area.
+
 2) Appropriate labels and axes.
 3) Appropriate use of colour.
 4) Country name labels.
