@@ -1,7 +1,3 @@
-# Data-Visualization-using-D3-SVGcds;lj sd
-sd
+# Data-Visualization-using-D3-SVG
 
-psd po
-sd uvisdj vosd
-
-sc
+The main objective of this project is to Revisualize the Hans Rosling Gapminder Visualization using d3.js the 
