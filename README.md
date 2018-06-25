@@ -30,4 +30,7 @@ fields as below:
 Extension of Project:
 
 In the Recreation of GapMinder Visualisation I have created the two Visualisation of Bar charts to show the number
-of countries per region and number of countries with govt. type.
+of countries per region and number of countries with govt. type. The bar charts change as the year changes.
+
+
+#### NOTE: PLEASE CONSIDER THIS PROJECT AS SAMPLE FOR ENCOURAGING OR INSPIRATION PURPOSE, IF YOU WANT TO REFFER PLEASE PROVIDE THE CITATION OF THIS LINK IN YOUR WORK.
