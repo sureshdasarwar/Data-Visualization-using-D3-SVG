@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang = "en" class="tas-com">
+<head>
+	<meta charset="utf-8">
+	<title>Assignment 2</title>
+	<script type="text/javascript" src="./d3/d3.v4.js" charset="utf-8"></script>
+	<script type="text/javascript" src=".\lib\jquery.js" charset="utf-8"></script>
+	<link href="./themes/prism.css" rel="stylesheet" />
+    <link href="./themes/tas_style.css" rel="stylesheet" />
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="./lib/prism.js" charset="utf-8"></script>
+</head>
+<body>
+	
+	<p><font face="verdana" color="magenta" size="22"><center>Information Visualization</center></font></p>
+	<h1> Channeling Hans </h1> <p align="right"><font face="times new roman" color="blue" size="5" align="right-side">Name:Suresh Dasarwar</font></p>
+	<!-- <h2> Assignment - 2 </h2> <p align="right"><font face="times new roman" color="blue" size="5" align="right-side">Student ID:17201088</font></p> -->
+	
+	<!-- List of Countries and list of Years -->
+	<table>
+	<tr>
+	<td><center><label for="Year">Year</label>
+<select id="year"></select>
+<label for="country">Country</label>
+<select id="country">
+<option selected="All">All</option> 
+<option value="Afghanistan">Afghanistan</option> 
+<option value="Albania">Albania</option> 
+<option value="Hungary">Hungary</option> 
+<option value="Iceland">Iceland</option> 
+<option value="India">India</option> 
+<option value="Indonesia">Indonesia</option> 
+<option value="Iran">Iran</option> 
+<option value="Iraq">Iraq</option> 
+<option value="Ireland">Ireland</option> 
+<option value="Israel">Israel</option> 
+<option value="Italy">Italy</option> 
+<option value="Jamaica">Jamaica</option> 
+<option value="Japan">Japan</option> 
+<option value="Jordan">Jordan</option> 
+<option value="Kazakhstan">Kazakhstan</option> 
+<option value="Kenya">Kenya</option> 
+<option value="Kiribati">Kiribati</option> 
+<option value="Kuwait">Kuwait</option> 
+<option value="Latvia">Latvia</option> 
+<option value="Lebanon">Lebanon</option> 
+<option value="Lesotho">Lesotho</option> 
+<option value="Liberia">Liberia</option> 
+<option value="Libya">Libya</option> 
+<option value="Lithuania">Lithuania</option> 
+<option value="Luxembourg">Luxembourg</option> 
+<option value="Madagascar">Madagascar</option> 
+<option value="Malawi">Malawi</option> 
+<option value="Malaysia">Malaysia</option> 
+<option value="Maldives">Maldives</option> 
+<option value="Mali">Mali</option> 
+<option value="Malta">Malta</option> 
+<option value="Marshall Islands">Marshall Islands</option> 
+<option value="Mauritania">Mauritania</option> 
+<option value="Mauritius">Mauritius</option> 
+<option value="Mexico">Mexico</option> 
+<option value="Moldova">Moldova</option> 
+<option value="Mongolia">Mongolia</option> 
+<option value="Montenegro">Montenegro</option> 
+<option value="Morocco">Morocco</option> 
+<option value="Syria">Syria</option> 
+<option value="Taiwan">Taiwan</option> 
+<option value="Tajikistan">Tajikistan</option> 
+            </center>
+            </td>
+		</tr>
+		</table>
+		<br>
+		<br>
+	<table border="1" color="black">
+        <tr>
+            <td><div id="Visualization1"></div></td>
+        </tr>
+        <tr>
+           <td><div id="Visualization2" ></div></td>  
+        </tr>
+        <tr>
+           <td><div id="Visualization3" ></div></td>
+        </tr>
+    </table>
+
+<style>
+.grid line {
+  stroke: gray;
+  stroke-opacity: 0.2;
+  shape-rendering: crispEdges;
+}
+.grid path {
+  stroke-width: 0;
+}
+select,label{
+    vertical-align: bottom;
+}
+svg{
+	vertical-align: bottom;
+	background-color: Aliceblue;
+}
+
+</style>
+<script>
+
+var globdataset;
+var dispyear;
+var circl;
+var con;
+var indflg = true;
+
+// mrgn has been given to svg and its dimesions are started here 
+var mrgn = {top: 10, right: 5, bottom: 55, left: 60};
+var outr_wdth = 700;
+var outr_hght = 400;
+var svg_width = outr_wdth - mrgn.left - mrgn.right;
+var svg_height = outr_hght - mrgn.top - mrgn.bottom;
+
+//SVG variable is selected and appended with various attribute
+var svg = 	d3.select("#Visualization1")
+				.append("svg")
+				.attr("width", svg_width + mrgn.left + (mrgn.right+200) )
+				.attr("height", svg_height + (mrgn.top+200)+ (mrgn.bottom-200))
+				.append("g")
+				.style("background", "Blue")
+				.attr("transform", "translate(" + mrgn.left + "," + mrgn.top + ")");
+var svg_b = d3.select("#Visualization2")
+						.append("svg")
+						.attr("width", svg_width + mrgn.left + (mrgn.right+200))
+			            .attr("height", svg_height/2 + 100 + mrgn.top + mrgn.bottom)
+						.append("g")
+						.attr("transform", "translate(" + mrgn.left + "," + mrgn.top + ")");
+var svg_bb = d3.select("#Visualization3")
+						.append("svg")
+						.attr("width", svg_width + mrgn.left + (mrgn.right+200))
+			            .attr("height", svg_height/2 + 100 + mrgn.top + mrgn.bottom)
+						.append("g")
+						.attr("transform", "translate(" + mrgn.left + "," + mrgn.top + ")");
+			
+			// Here we are Creating a scale for x-axis and y-axis to measure values for bar graph one 
+			var yscale_v1_bar2 = d3.scaleLinear()
+				                     .domain([0, 100])
+				                     .range([svg_height/2, 0]);
+	
+			
+			var xscale_v1_bar1 = d3.scaleBand()
+							.range([0, [svg_width]], 0.1)
+							.paddingInner(0.3)
+							.paddingOuter(0.3);
+						
+			//Defining  Y axis and x-axis for bar graph one 
+			var yaxis_bar1 = d3.axisLeft()
+							   .scale(yscale_v1_bar2)
+							   .ticks(5);
+		
+			var xaxis_bar1 = d3.axisBottom()
+						 .scale(xscale_v1_bar1)
+						 .ticks(5);
+						  
+			// Initailize the y axis
+			svg_b.append("g")
+				.attr("class", "axis")
+				.attr("id", "y-axis")
+				.call(yaxis_bar1);
+					
+			// Initailize the x-axis
+			svg_b.append("g")
+				.attr("class", "axis")
+				.attr("id", "x-axis")
+				.attr("transform", "translate(0," + svg_height/2 + ")");
+
+			
+			// Here we have Created the xscale_v1 and yscale_v1 to measure the values for bar graph two heights and domain yet not set 
+			var yscale_v1_bar2 = d3.scaleLinear()
+				                     .domain([0, 100])
+				                     .range([svg_height/2, 0]);
+	
+			
+			var xscale_v1_bar2 = d3.scaleBand()
+							.range([0, [svg_width]], 0.1)
+							.paddingInner(0.3)
+							.paddingOuter(0.3);
+		
+		// defining x-axis and y-axis for graph two			
+			var yaxis_bar2 = d3.axisLeft()
+							  .scale(yscale_v1_bar2)
+							  .ticks(5);
+			
+			var xaxis_bar2 = d3.axisBottom()
+						 .scale(xscale_v1_bar2)
+						 .ticks(5);
+						  
+			// Initailize the y axis
+			svg_bb.append("g")
+				.attr("class", "axis")
+				.attr("id", "y-axis")
+				.call(yaxis_bar2);
+					
+			// Initailize the x-axis
+			svg_bb.append("g")
+				.attr("class", "axis")
+				.attr("id", "x-axis")
+				.attr("transform", "translate(0," + svg_height/2 + ")");
+							
+//to display the year on Visualization graph 
+var viz_year = svg.append("text")
+				.style("fill", "Green")
+				.attr( "fill-opacity", 0.25 )
+				.attr("transform", "translate(15,250) scale(12)")
+				.style("font","times new roman")
+				.attr("text-anchor", "begin")
+				
+//The legends for continent and the color code for same				
+svg.append("rect").attr("x", 480).attr("y", 260).attr("width", 20).attr("height", 20).attr("fill","#0000FF");  
+svg.append("rect").attr("x", 480).attr("y", 230).attr("width", 20).attr("height", 20).attr("fill","#FF1493");
+svg.append("rect").attr("x", 480).attr("y", 200).attr("width", 20).attr("height", 20).attr("fill","#FFD700");
+svg.append("rect").attr("x", 480).attr("y", 200).attr("width", 20).attr("height", 20).attr("fill","#228B22");
+svg.append("rect").attr("x", 480).attr("y", 170).attr("width", 20).attr("height", 20).attr("fill","#8B0000");
+svg.append("rect").attr("x", 480).attr("y", 140).attr("width", 20).attr("height", 20).attr("fill","#FF8C00");
+svg.append("rect").attr("x", 480).attr("y", 110).attr("width", 20).attr("height", 20).attr("fill","#00BFFF");
+svg.append("rect").attr("x", 480).attr("y", 80).attr("width", 20).attr("height", 20).attr("fill","#9400D3");
+svg.append("rect").attr("x", 480).attr("y", 50).attr("width", 20).attr("height", 20).attr("fill","#DC143C");
+
+//list of continents
+svg.append("text").attr("x", 520).attr("y",64 ).style("text-anchor", "start").attr("fill","black").text("Africa");
+svg.append("text").attr("x", 520).attr("y",94 ).style("text-anchor", "start").attr("fill","black").text("Australia");
+svg.append("text").attr("x", 520).attr("y",125 ).style("text-anchor", "start").attr("fill","black").text("Central America");
+svg.append("text").attr("x", 520).attr("y",156 ).style("text-anchor", "start").attr("fill","black").text("Oceania");
+svg.append("text").attr("x", 520).attr("y",187 ).style("text-anchor", "start").attr("fill","black").text("South America");
+svg.append("text").attr("x", 520).attr("y",218 ).style("text-anchor", "start").attr("fill","black").text("North America");
+svg.append("text").attr("x", 520).attr("y",248 ).style("text-anchor", "start").attr("fill","black").text("Europe");
+svg.append("text").attr("x", 520).attr("y",278 ).style("text-anchor", "start").attr("fill","black").text("Asia");
+
+
+//x-axis and y-axis scales for Visualization graph				
+var xscale_v1 = d3.scaleLog().range([0, svg_width]);
+var yscale_v1 = d3.scaleLinear().range([svg_height,0]);
+var radius_scale = d3.scaleSqrt().range([3, 50]);
+var radius_colorscale = d3.scaleOrdinal(d3.schemeCategory10);
+var color_scale = d3.scaleOrdinal().range(["#0000FF", "#FF1493", "#FFD700", "#228B22","#8B0000", "#FF8C00", "#00BFFF","#9400D3","#DC143C"]);
+
+//axes scale for visualization graph
+var xAxis = d3.axisBottom().scale(xscale_v1).ticks(10,d3.format(",d"));
+var yAxis = d3.axisLeft().scale(yscale_v1).ticks(10);
+svg.append("g").attr("class", "axis").attr("id", "x-axis").attr("transform", "translate(0," + svg_height + ")");
+svg.append("g").attr("class", "axis").attr("id", "y-axis");
+
+//creation of Domain for y-axis
+yscale_v1.domain([0,100])
+svg.select("#y-axis").call(yAxis);
+
+// creating grids and calling them for visualization graph
+function xaxis_grid() {return d3.axisTop(xscale_v1).ticks(10,d3.format(",d"));}
+function yaxis_grid() {return d3.axisLeft(yscale_v1).ticks(10)}
+
+svg.append("g").attr("class", "grid").call(yaxis_grid().tickSize(-svg_width).tickFormat(""))
+svg.append("g").attr("class", "grid").call(xaxis_grid().tickSize(-svg_height).tickFormat(""));
+svg.append("text").attr("transform", "rotate(-90)").attr("y",-50 ).attr("x",-200).style("text-anchor", "middle").attr("dy", "1em").attr("fill","blue").text("LifeExpectancy");
+svg.append("text").attr("x",outerWidth/2 - 500).attr("y",  svg_height + 30 ).style("text-anchor", "middle").attr("fill","blue").text("Income/capita (GDP)");
+
+// creating x-axis and y-axis labes for bar graph one and two
+svg_b.append("text").attr("transform", "rotate(-90)").attr("y",-50 ).attr("x",-100).style("text-anchor", "middle").attr("dy", "1em").attr("fill","Blue").text("Number of Countries");
+svg_b.append("text").attr("x",outerWidth/2 - 500).attr("y",  svg_height/2 + 30 ).style("text-anchor", "middle").attr("fill","blue").text("Continent(Regions)");
+
+svg_bb.append("text").attr("transform", "rotate(-90)").attr("y",-50 ).attr("x",-100).style("text-anchor", "middle").attr("dy", "1em").attr("fill","blue").text("Number of Countries");
+svg_bb.append("text").attr("x",outerWidth/2 - 500).attr("y",  svg_height/2 + 30 ).style("text-anchor", "middle").attr("fill","blue").text("Government Type");
+
+//Function which creates the visualization 
+function VisualAnimation()
+	{
+	
+	var filtered_globdataset = globdataset.filter(yearFilter);
+
+	var object_counter = {};
+			  	filtered_globdataset.forEach(function(d)
+				{
+			  		var r = d.Region ; 
+			  		if(object_counter[r] === undefined)
+					{
+				        object_counter[r] = 1;
+				    } 
+					else
+					{
+				        object_counter[r] = object_counter[r] + 1;
+				    }
+			  	});
+			  	
+				var Bar_length = svg_b.selectAll("rect")
+				   .data(filtered_globdataset, function key(d)
+				   {
+					return d.Region;
+				   });
+			
+			 		Bar_length
+			
+				// Creating the new elements in the global dataset for bar graph one
+			  	Bar_length.enter()
+				   .append("rect")
+					.transition()
+					.duration(500)
+					.ease(d3.easeElastic) // using ease elastic animation 
+				   .attr("x", function(d, i) 
+				   {
+				   		return xscale_v1_bar1(d.Region);
+				   })
+				   .attr("y", function(d, i) 
+				   {
+				   		
+				   		return yscale_v1_bar2(object_counter[d.Region]);
+				   })
+				   .attr("width", xscale_v1_bar1.bandwidth())
+				   .attr("height", function(d) {
+				   		return svg_height/2 - yscale_v1_bar2(object_counter[d.Region]);
+				   })
+				   .style("fill", "#9400D3");
+			
+				// Removing bar length which dont have matching data elemement
+				Bar_length.exit().remove();
+
+				var object_counter = {};
+			  	filtered_globdataset.forEach(function(d)
+				{
+			  		var r = d.Government ; 
+			  		if(object_counter[r] === undefined)
+					{
+				        object_counter[r] = 1;
+				    }
+					else
+					{
+				        object_counter[r] = object_counter[r] + 1;
+				    }
+			  	});
+			  	var Bar_length = 	svg_bb.selectAll("rect")
+				   .data(filtered_globdataset, function key(d)
+				   {
+					return d.Government;
+				});
+			
+			  	// Updating the bar graph for display of existing elemements for matching of new data
+			  	Bar_length
+			
+			 	// Creating new elements in the globdataset for Bar graph two
+			  	Bar_length.enter()
+				   .append("rect")
+					.transition()
+					
+					.ease(d3.easeElastic)
+				   .attr("x", function(d, i)
+				   {
+				   		return xscale_v1_bar2(d.Government);
+				   })
+				   .attr("y", function(d, i)
+				   {
+						return yscale_v1_bar2(object_counter[d.Government]);
+				   })
+				   .attr("width", xscale_v1_bar2.bandwidth())
+				   .attr("height", function(d)
+				   {
+				   		return svg_height/2 - yscale_v1_bar2(object_counter[d.Government]);
+				   })
+				   .style("fill", "#20B2AA");
+			
+				Bar_length.exit().remove();
+	// getting the data from file by getElementById method
+	if(document.getElementById('country').value != "All" ){
+		con = document.getElementById('country').value
+		console.log(con)
+		document.getElementById('country').value = "All"
+		var globdataset_con = globdataset.filter(con_filter);
+		var circle_2dimen = svg.selectAll("circle").data(globdataset_con,function key(d){return d.Year});
+		svg.selectAll('circle').attr("opacity",0.2);
+		console.log(svg.selectAll('circle').attr("opacity",0.2))
+		circle_2dimen.enter()
+				.append("circle")
+				.attr("cx", function (d){ return xscale_v1(+d["GDP"]); })
+				.attr("cy", function (d){ return yscale_v1(+d["LifeExp"]); })
+				.attr("r",  function (d){ return radius_scale(+d["Population"]); })
+				.attr("fill", function (d){ return   color_scale(d["Region"]); })
+				.attr("stroke", 'red')
+				.style("stroke-width", 1)
+		// giving the transition to all the circle with d3 function 
+		svg.selectAll('circle').transition().duration(5000).attr("opacity",1)
+		svg.selectAll('circle').transition().duration(5000).ease(d3.easeElasticOut).remove()
+		VisualAnimation();					
+		console.log(circl)
+	}
+	
+	
+	xscale_v1.domain(d3.extent(globdataset, function(d){return +d.GDP}))
+	svg.select("#x-axis").call(xAxis);
+	viz_year.text(dispyear); //to show the year in background for visualization graph
+	circl = svg.selectAll("circle").data(filtered_globdataset,function key(d){return d.Country});
+	radius_scale.domain(d3.extent(globdataset, function (d){ return +d["Population"]; })); // bubble radius represents the population  
+
+	// circle's size get updated with radius as population with respect to GDP and Life expectancy
+	circl.transition()
+		.duration(2000)
+		.ease(d3.easeBounce)
+		.attr("cx", function (d){ return xscale_v1(+d["GDP"]); })
+		.attr("cy", function (d){ return yscale_v1(+d["LifeExp"]); })
+		.attr("r",  function (d){ return radius_scale(+d["Population"]); })
+	    .attr("fill", function (d){ return color_scale(d["Region"]); })
+		.transition()
+		.duration(200)
+		.attr("opacity",1)
+		.attr("stroke",'black');
+		
+//circle attribute for display on graph with respect to GDP LifeExpectancy Population and Region
+	circl.enter()
+		.append("circle")
+		.attr("cx", function (d){ return xscale_v1(+d["GDP"]); })
+		.attr("cy", function (d){ return yscale_v1(+d["LifeExp"]); })
+		.attr("r",  function (d){ return radius_scale(+d["Population"]); })
+		.attr("fill", function (d){ return color_scale(d["Region"]); })
+		.attr("opacity",1)
+		.attr("stroke",'green')
+		
+	// it shows information of country with its population when we move the mouse over bubble		
+	.on("mouseover", function(d){d3.select(this)
+		.style("stroke-width",2)
+		.transition()
+        .duration(500)
+		.attr("r",function (d){ return radius_scale(+d["Population"] * 10); });})
+    .on("mouseout", function(d){d3.select(this)
+       .style("stroke-width", 1)
+       .transition()
+       .duration(500)
+	   .attr("r",function (d){ return radius_scale(+d["Population"]); });})
+	.append("title")  
+    .text(function(d){ return d.Country+ "-" +d.Population;});
+// it shows the name of country when moved over the bubble 	
+	circl.append("text")
+		.attr("x",100)
+		.attr("y",100)
+		.text(function key(d){return d.Country});
+		
+}
+
+function yearFilter(value){
+	return (value.Year == dispyear)
+}			
+
+function con_filter(value){
+	return (value.Country == con )
+}			
+			
+// d3 function to load the csv file 			
+d3.csv("./data/Gapminder_All_Time.csv", function(error, data){
+	if(error)
+	{
+		console.log("Error! please check with excelsheet");
+		console.log(error);
+	}
+	else
+	{
+		console.log("Data Loaded successfully");
+		globdataset = data;
+// display the Region wise data on Bar graph one 
+		xscale_v1_bar1.domain(globdataset.map(function(d) { return d.Region; }));
+		svg_b.select("#x-axis").call(xaxis_bar1);
+//display the Government wise data on Bar graph two
+		xscale_v1_bar2.domain(globdataset.map(function(d) { return d.Government; }));
+		svg_bb.select("#x-axis").call(xaxis_bar2);
+//showing the data on bar graph with respect to population
+		globdataset.forEach(function(d){ d['Population'] = +d['Population'];});
+		dispyear = d3.min(globdataset, function(d) { return +d.Year});
+//dropdown menu for year and country
+		select = document.getElementById('year');
+		var reset_value = "Year"
+		var temp ="";
+		var opt = document.createElement('option');
+		opt.value = reset_value;
+		opt.innerHTML = reset_value;
+		select.appendChild(opt);
+//function for dropdown list and function for showing transition in step of 10 years till 1950  
+		function dropdown() {
+		var start = d3.min(globdataset, function(d) { return +d.Year});
+		var end = d3.max(globdataset, function(d) { return +d.Year});
+		for (var i = start; i<=end; i++){
+		if(i>1950) //increase in years after 1950 by increment of one year
+		{
+			var opt = document.createElement('option');
+			opt.value = i;
+			opt.innerHTML = i;
+			select.appendChild(opt); 
+		}
+		else 
+		{					
+			if(i%10 == 0)  // if year is less than 1950 then it change with 10 years gap till 1950
+			{		
+			var opt = document.createElement('option');
+			opt.value = i;
+			opt.innerHTML = i;
+			select.appendChild(opt); 
+			}
+		}
+		
+		}
+		}
+		dropdown()
+		VisualAnimation()
+		setInterval(function() {
+		
+		if(document.getElementById('year').value != "Year" ){
+			dispyear=parseInt(document.getElementById('year').value);
+
+			VisualAnimation();
+			document.getElementById('year').options.length = 1;
+			dropdown();
+		}
+			
+		if (dispyear < 1950)  //if year is less than 1950 then it change with 10 years gap till 1950
+		{
+			for (var i = dispyear % 10; i < 10; i++)
+			{
+				indflg?dispyear = dispyear + 1:temp=1;
+				svg.selectAll('circle').attr("opacity",0.75)}
+			}
+			else
+			{
+				indflg?dispyear = dispyear + 1:temp=1;
+			}
+			if(dispyear > d3.max(globdataset, function(d) { return +d.Year})) //if greater than 1950 then transition will be increment of one year
+			{
+				dispyear = d3.min(globdataset, function(d) { return +d.Year})
+				svg.selectAll("circle").transition().duration(20).remove();
+			}
+				indflg?VisualAnimation():temp=1;
+		}, 2000);
+}
+})
+	
+</script>
+</body>
+</html>
