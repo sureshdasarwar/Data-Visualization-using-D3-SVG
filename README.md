@@ -32,7 +32,8 @@ Extension of Project:
 In the Recreation of GapMinder Visualisation I have created the two Visualisation of Bar charts to show the number
 of countries per region and number of countries with govt. type. The bar charts change as the year changes.
 
-View the Project from this link http://htmlpreview.github.io/?https://github.com/sureshdasarwar/Data-Visualization-using-D3-SVG/blob/master/Hans%20Rosling%20Recreation.html
+### To View the Project use this link 
+http://htmlpreview.github.io/?https://github.com/sureshdasarwar/Data-Visualization-using-D3-SVG/blob/master/Hans%20Rosling%20Recreation.html
 
 
 #### NOTE: PLEASE CONSIDER THIS PROJECT AS SAMPLE FOR ENCOURAGING OR INSPIRATION PURPOSE, IF YOU WANT TO REFFER PLEASE PROVIDE THE CITATION OF THIS LINK IN YOUR WORK.
